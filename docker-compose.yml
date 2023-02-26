@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  # api:
+  #   image: 3.10-slim
+  #   ports:
+  #     - 8000:8000
+  db:
+    image: postgres:11-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=techgo
+      
