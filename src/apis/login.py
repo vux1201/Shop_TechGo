@@ -1,36 +1,37 @@
 from typing import Any
 
-import bcrypt
 import jwt
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import EmailStr
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+import crud
 import schemas
 from apis.deps import get_db
+from core.security import verify_password
 from models.user import User
-from utils import password_strong, create_access_token
-
+from utils import create_access_token, password_strong
 
 router = APIRouter(tags=["login"])
 
 
-@router.post("/login")
+@router.post("/login/access-token")
 async def login(
     db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
-) -> schemas.Token:
+) -> Any:
     """Login API"""
     stmt = select(User).where(User.email == form_data.username)
     user = db.scalar(stmt)
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Authenticate failed",
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Không tồn tại user với email này",
         )
-    if not bcrypt.checkpw(form_data.password.encode(), user.hashed_password.encode()):
+    if not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Authenticate failed",
         )
     return {"access_token": create_access_token(user.email), "token_type": "bearer"}
@@ -38,25 +39,24 @@ async def login(
 
 @router.post("/register", response_model=schemas.User)
 async def register(
-    db: Session = Depends(get_db), *, user_data: schemas.UserCreate
+    db: Session = Depends(get_db),
+    *,
+    email: EmailStr = Body(...),
+    password: str = Body(...)
 ) -> Any:
     """Register API"""
-    stmt = select(User).where(User.email == user_data.email)
+    stmt = select(User).where(User.email == email)
     user = db.scalar(stmt)
     if user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User with this email already exist",
         )
-    if not password_strong(user_data.password):
+    if not password_strong(password):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Password is too weak",
+            detail="Mật khẩu phải có ít nhất 8 kí tự, bao gồm 1 chữ hoa, 1 chữ thường, 1 chữ số, 1 kí tự đặc biệt",
         )
-    hashed_password = bcrypt.hashpw(
-        user_data.password.encode(), bcrypt.gensalt()
-    ).decode()
-    new_user = User(email=user_data.email, hashed_password=hashed_password)
-    db.add(new_user)
-    db.commit()
-    return new_user
+    user_in = schemas.UserCreate(email=email, password=password)
+    user = crud.user.create(db=db, obj_in=user_in)
+    return user
