@@ -1,13 +1,23 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from apis import api_router
 
-from apis import brands, categories, discounts, login, products, users
+app = FastAPI(
+    title="API Techgo",
+    contact={
+        "name": "Huong Pham",
+        "github": "https://github.com/huongpx",
+    },
+)
 
-app = FastAPI()
+origins = ["*"]
 
-app.include_router(users.router)
-app.include_router(login.router)
-app.include_router(products.router)
-app.include_router(categories.router)
-app.include_router(brands.router)
-app.include_router(brands.router)
-app.include_router(discounts.router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(api_router, prefix="/api")
