@@ -2,14 +2,12 @@ from fastapi import APIRouter, Depends, Body, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import EmailStr
 from utils.validate import password_strong
+from utils.constants import GENDER_CHOICES
 
 from models.user import User
 import schemas
 import crud
 from apis.deps import get_current_user, get_db
-
-# 0: unknown, 1: male, 2: female, 9: not applicable
-GENDER_CHOICES = [0, 1, 2, 9]
 
 router = APIRouter(
     prefix="/users",
@@ -46,14 +44,14 @@ async def update_user_me(
     password: str = Body(None),
 ):
     user = crud.user.get_by_email(db, email=email)
-    if user:
+    if user and user.id != current_user.id:
         raise HTTPException(status_code=400, detail="Email đã tồn tại")
-    if not password_strong(password):
+    if password and not password_strong(password):
         raise HTTPException(
             status_code=400,
             detail="Mật khẩu phải có ít nhất 8 kí tự, bao gồm 1 chữ hoa, 1 chữ thường, 1 chữ số, 1 kí tự đặc biệt",
         )
-    if gender not in GENDER_CHOICES:
+    if gender and gender not in GENDER_CHOICES:
         raise HTTPException(
             status_code=400,
             detail="Giới tính gửi lên phải là 0 (Không biết), 1 (Nam), 2 (Nữ), 9 (Không cung cấp)",
