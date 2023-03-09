@@ -1,13 +1,13 @@
-from fastapi import APIRouter, Depends, Body, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Body, Depends, HTTPException
 from pydantic import EmailStr
-from utils.validate import password_strong
-from utils.constants import GENDER_CHOICES
+from sqlalchemy.orm import Session
 
-from models.user import User
-import schemas
 import crud
+import schemas
 from apis.deps import get_current_user, get_db
+from models.user import User
+from utils.constants import GENDER_CHOICES
+from utils.validate import password_strong
 
 router = APIRouter(
     prefix="/users",
