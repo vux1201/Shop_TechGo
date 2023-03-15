@@ -8,7 +8,6 @@ import schemas
 router = APIRouter(
     prefix="/categories",
     tags=["category"],
-    dependencies=[Depends(get_current_admin)],
 )
 
 
@@ -26,6 +25,7 @@ async def read_categories(*, db: Session = Depends(get_db)):
     "/",
     summary="Thêm danh mục sản phẩm",
     response_model=schemas.Category,
+    dependencies=[Depends(get_current_admin)],
 )
 async def create_category(
     *, db: Session = Depends(get_db), category_in: schemas.CategoryCreate
@@ -48,6 +48,7 @@ async def read_category(*, db: Session = Depends(get_db), id: int):
     "/{id}",
     summary="Sửa danh mục sản phẩm",
     response_model=schemas.Category,
+    dependencies=[Depends(get_current_admin)],
 )
 async def update_category(
     *, db: Session = Depends(get_db), id: int, category_in: schemas.CategoryUpdate
@@ -65,6 +66,7 @@ async def update_category(
     "/{id}",
     summary="Xóa danh mục sản phẩm",
     response_model=schemas.Category,
+    dependencies=[Depends(get_current_admin)],
 )
 async def delete_category(*, db: Session = Depends(get_db), id: int):
     category = crud.category.get(db=db, id=id)

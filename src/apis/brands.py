@@ -8,7 +8,6 @@ import schemas
 router = APIRouter(
     prefix="/brands",
     tags=["brand"],
-    dependencies=[Depends(get_current_admin)],
 )
 
 
