@@ -1,12 +1,14 @@
 from typing import Any
+
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from fastapi.encoders import jsonable_encoder
+from pydantic import EmailStr
 
+from core.security import get_password_hash
 from crud.base import CRUDBase
 from models.user import User
 from schemas import UserCreate, UserUpdate
-from core.security import get_password_hash
 
 
 class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
@@ -17,8 +19,12 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
     def create(self, db: Session, obj_in: UserCreate) -> User:
         db_obj = User(
+            firstname=obj_in.firstname,
+            lastname=obj_in.lastname,
             email=obj_in.email,
+            phone_number=obj_in.phone_number,
             hashed_password=get_password_hash(obj_in.password),
+            address=obj_in.address,
             is_staff=obj_in.is_staff,
             is_admin=obj_in.is_admin,
         )
@@ -42,9 +48,17 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
 
     def create_superuser(self, db: Session, email: str, password: str) -> User:
         user = self.get_by_email(db=db, email=email)
+        email = EmailStr(email)
         if not user:
             user_in = UserCreate(
-                email=email, password=password, is_admin=True, is_staff=True
+                firstname="",
+                lastname="",
+                email=email,
+                phone_number="",
+                address="",
+                password=password,
+                is_admin=True,
+                is_staff=True,
             )
             user = self.create(db=db, obj_in=user_in)
         return user

@@ -14,11 +14,17 @@ class UserBase(BaseModel):
     is_staff: bool | None = False
 
 
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
     """Props received via API on create"""
 
+    firstname: str
+    lastname: str
     email: EmailStr
+    phone_number: str
+    address: str
     password: str
+    is_admin: bool
+    is_staff: bool
 
 
 class UserUpdate(UserBase):

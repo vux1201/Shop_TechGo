@@ -41,8 +41,12 @@ async def login(
 async def register(
     db: Session = Depends(get_db),
     *,
+    firstname: str = Body(...),
+    lastname: str = Body(...),
     email: EmailStr = Body(...),
-    password: str = Body(...)
+    password: str = Body(...),
+    phone_number: str = Body(...),
+    address: str = Body(...)
 ) -> Any:
     """Register API"""
     stmt = select(User).where(User.email == email)
@@ -57,6 +61,15 @@ async def register(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Mật khẩu phải có ít nhất 8 kí tự, bao gồm 1 chữ hoa, 1 chữ thường, 1 chữ số, 1 kí tự đặc biệt",
         )
-    user_in = schemas.UserCreate(email=email, password=password)
+    user_in = schemas.UserCreate(
+        firstname=firstname,
+        lastname=lastname,
+        email=email,
+        phone_number=phone_number,
+        address=address,
+        password=password,
+        is_admin=False,
+        is_staff=False,
+    )
     user = crud.user.create(db=db, obj_in=user_in)
     return user

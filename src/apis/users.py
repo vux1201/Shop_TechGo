@@ -15,11 +15,6 @@ router = APIRouter(
 )
 
 
-# @router.get("/", tags=["users"])
-# async def read_users():
-#     return [{"username": "huong"}, {"username": "oanh"}]
-
-
 @router.get(
     "/me",
     tags=["users"],
@@ -67,8 +62,3 @@ async def update_user_me(
     )
     user = crud.user.update(db=db, db_obj=current_user, obj_in=user_in)
     return user
-
-
-# @router.get("/{username}", tags=["users"])
-# async def read_user(username: str, age: int = 25):
-#     return {"username": username}
