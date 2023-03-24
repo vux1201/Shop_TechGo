@@ -1,7 +1,7 @@
 import os
 import secrets
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status, Request
 from PIL import Image
 from sqlalchemy.orm import Session
 
@@ -18,7 +18,7 @@ router = APIRouter(
 
 
 @router.post("/uploadfile/", summary="Upload ảnh sản phẩm")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(*, file: UploadFile = File(...), request: Request):
     if not file.content_type in IMAGE_TYPES_ALLOWED:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -35,7 +35,7 @@ async def upload_file(file: UploadFile = File(...)):
     img.save(to_save_path)
     img.close()
 
-    return "/files/" + image_fn
+    return request.url._url.rstrip(request.url.path) + "/files/" + image_fn
 
 
 @router.get(
