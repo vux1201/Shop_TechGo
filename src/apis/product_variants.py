@@ -9,6 +9,7 @@ import crud
 import schemas
 from apis.deps import get_current_admin, get_db
 from utils.constants import IMAGE_TYPES_ALLOWED
+from core.config import settings
 
 router = APIRouter(
     prefix="/product-variants",
@@ -35,7 +36,7 @@ async def upload_file(*, file: UploadFile = File(...), request: Request):
     img.save(to_save_path)
     img.close()
 
-    return request.url._url.rstrip(request.url.path) + "/files/" + image_fn
+    return settings.HOST_URL + "/files/" + image_fn
 
 
 @router.get(
