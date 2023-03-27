@@ -20,6 +20,7 @@ class CRUDProduct(CRUDBase[ProductVariant, ProductVariantCreate, ProductVariantU
         variant = ProductVariant(
             product_id=product_id,
             name=variant_in.name,
+            color=variant_in.color,
             sku=variant_in.sku,
             price=variant_in.price,
             inventory=variant_in.inventory,

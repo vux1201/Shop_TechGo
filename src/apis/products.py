@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 import crud
-from apis.deps import get_db, get_current_admin
 import schemas
+from apis.deps import get_current_admin, get_db
 
 router = APIRouter(prefix="/products", tags=["products"])
 
@@ -12,8 +12,8 @@ router = APIRouter(prefix="/products", tags=["products"])
 async def read_products(
     *,
     db: Session = Depends(get_db),
-    category_id: int | None = None,
-    brand_id: int | None = None,
+    category_id: list[int] | None = Query(default=None),
+    brand_id: list[int] | None = Query(default=None),
     keyword: str | None = None,
     skip: int = 0,
     limit: int = 10,

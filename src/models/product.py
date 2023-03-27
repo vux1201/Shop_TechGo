@@ -46,6 +46,7 @@ class Product(Base):
 class ProductVariant(Base):
     product_id: Mapped[int] = mapped_column(ForeignKey("product.id"))
     name: Mapped[str] = mapped_column(String(255))
+    color: Mapped[str] = mapped_column(String(15), default="#000000")
     sku: Mapped[str] = mapped_column(String(255))
     price: Mapped[int]
     inventory: Mapped[int]

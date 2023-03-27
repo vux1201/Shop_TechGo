@@ -15,6 +15,7 @@ class ProductVariantImage(ProductVariantImageBase):
 
 class ProductVariantBase(BaseModel):
     name: str
+    color: str
     sku: str
     price: int
     inventory: int
@@ -33,6 +34,7 @@ class ProductVariant(BaseModel):
     id: int
     product_id: int
     name: str
+    color: str
     sku: str
     price: int
     inventory: int
