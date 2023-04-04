@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class CategoryBase(BaseModel):
     name: str
-    image: str
+    image: str | None
 
 
 class CategoryCreate(CategoryBase):
