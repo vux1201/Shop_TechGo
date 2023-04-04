@@ -30,8 +30,13 @@ async def read_orders_me(
     dependencies=[Depends(get_current_admin)],
     description="Admin lấy tất cả order",
 )
-async def read_orders(*, db: Session = Depends(get_db)):
-    orders = crud.order.get_multi(db=db)
+async def read_orders(
+    *,
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 10,
+):
+    orders = crud.order.get_multi(db=db, skip=skip, limit=limit)
     return orders
 
 
@@ -44,7 +49,7 @@ async def create_order(
     *,
     db: Session = Depends(get_db),
     order_items_in: list[schemas.OrderItemCreate],
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     """
     Cần truyền lên list các mẫu sản phẩm, mỗi mẫu gồm các thông tin như trong Example:

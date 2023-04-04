@@ -16,8 +16,13 @@ router = APIRouter(
     summary="Lấy danh sách danh mục sản phẩm",
     response_model=list[schemas.Category],
 )
-async def read_categories(*, db: Session = Depends(get_db)):
-    categories = crud.category.get_multi(db=db)
+async def read_categories(
+    *,
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 10,
+):
+    categories = crud.category.get_multi(db=db, skip=skip, limit=limit)
     return categories
 
 

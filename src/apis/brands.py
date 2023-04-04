@@ -16,8 +16,13 @@ router = APIRouter(
     summary="Lấy danh sách nhãn hiệu",
     response_model=list[schemas.Brand],
 )
-async def read_brands(*, db: Session = Depends(get_db)):
-    brands = crud.brand.get_multi(db=db)
+async def read_brands(
+    *,
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 10,
+):
+    brands = crud.brand.get_multi(db=db, skip=skip, limit=limit)
     return brands
 
 

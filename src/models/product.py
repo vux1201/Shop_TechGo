@@ -11,6 +11,7 @@ if typing.TYPE_CHECKING:
 
 class Category(Base):
     name: Mapped[str] = mapped_column(String(255))
+    image: Mapped[str] = mapped_column(nullable=True)
 
     products: Mapped[list["Product"]] = relationship(back_populates="category")
 

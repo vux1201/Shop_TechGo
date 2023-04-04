@@ -18,8 +18,13 @@ router = APIRouter(
     response_model=list[schemas.Discount],
     dependencies=[Depends(get_current_admin)],
 )
-async def read_discounts(*, db: Session = Depends(get_db)):
-    discounts = crud.discount.get_multi(db=db)
+async def read_discounts(
+    *,
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 10,
+):
+    discounts = crud.discount.get_multi(db=db, skip=skip, limit=limit)
     return discounts
 
 
