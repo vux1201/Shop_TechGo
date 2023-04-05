@@ -4,19 +4,23 @@ from sqlalchemy.orm import Session
 import crud
 import schemas
 from apis.deps import get_current_admin, get_db
+from core.pagination import PagedResponseSchema, PageParams, paginate
 
 router = APIRouter(prefix="/products", tags=["products"])
 
 
-@router.get("/", response_model=list[schemas.Product], summary="Lấy danh sách sản phẩm")
+@router.get(
+    "/",
+    response_model=PagedResponseSchema[schemas.Product],
+    summary="Lấy danh sách sản phẩm",
+)
 async def read_products(
     *,
     db: Session = Depends(get_db),
     category_id: list[int] | None = Query(default=None),
     brand_id: list[int] | None = Query(default=None),
     keyword: str | None = None,
-    skip: int = 0,
-    limit: int = 10,
+    page_params: PageParams = Depends(),
 ):
     """
     Các tham số: truyền tham số dạng ?skip=0&limit=10...
@@ -28,15 +32,12 @@ async def read_products(
         - category_id: truyền id của danh mục sản phẩm
         - brand_id: id của thương hiệu
     """
-    products = crud.product.get_multi_filter(
-        db=db,
+    query = crud.product.get_multi_filter(
         category_id=category_id,
         brand_id=brand_id,
         keyword=keyword,
-        skip=skip,
-        limit=limit,
     )
-    return products
+    return paginate(db, query, page_params, schemas.Product)
 
 
 @router.post(
