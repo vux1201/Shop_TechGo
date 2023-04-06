@@ -13,7 +13,9 @@ class Category(Base):
     name: Mapped[str] = mapped_column(String(255))
     image: Mapped[str] = mapped_column(nullable=True)
 
-    products: Mapped[list["Product"]] = relationship(back_populates="category")
+    products: Mapped[list["Product"]] = relationship(
+        back_populates="category", cascade="all, delete-orphan"
+    )
 
     def __repr__(self) -> str:
         return f"{self.name}"
@@ -22,7 +24,9 @@ class Category(Base):
 class Brand(Base):
     name: Mapped[str] = mapped_column(String(255))
 
-    products: Mapped[list["Product"]] = relationship(back_populates="brand")
+    products: Mapped[list["Product"]] = relationship(
+        back_populates="brand", cascade="all, delete-orphan"
+    )
 
     def __repr__(self) -> str:
         return f"{self.name}"
