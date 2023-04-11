@@ -16,7 +16,9 @@ class Order(Base):
     total: Mapped[int]
 
     user: Mapped["User"] = relationship(back_populates="orders")
-    order_items: Mapped[list["OrderItem"]] = relationship(back_populates="order")
+    order_items: Mapped[list["OrderItem"]] = relationship(
+        back_populates="order", cascade="all, delete-orphan"
+    )
 
 
 class OrderItem(Base):

@@ -41,7 +41,7 @@ class Product(Base):
     category: Mapped["Category"] = relationship(back_populates="products")
     brand: Mapped["Brand"] = relationship(back_populates="products")
     product_variants: Mapped[list["ProductVariant"]] = relationship(
-        back_populates="product"
+        back_populates="product", cascade="all, delete-orphan"
     )
 
     def __repr__(self) -> str:
@@ -59,13 +59,13 @@ class ProductVariant(Base):
     product: Mapped["Product"] = relationship(back_populates="product_variants")
     discount: Mapped["Discount"] = relationship(back_populates="product_variant")
     images: Mapped[list["ProductVariantImage"]] = relationship(
-        back_populates="product_variant"
+        back_populates="product_variant", cascade="all, delete-orphan"
     )
     cart_items: Mapped[list["CartItem"]] = relationship(
-        back_populates="product_variant"
+        back_populates="product_variant", cascade="all, delete-orphan"
     )
     order_items: Mapped[list["OrderItem"]] = relationship(
-        back_populates="product_variant"
+        back_populates="product_variant", cascade="all, delete-orphan"
     )
 
     def __repr__(self) -> str:

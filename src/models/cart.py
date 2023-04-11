@@ -15,7 +15,7 @@ class ShoppingSession(Base):
 
     user: Mapped["User"] = relationship(back_populates="shopping_session")
     cart_items: Mapped[list["CartItem"]] = relationship(
-        back_populates="shopping_session"
+        back_populates="shopping_session", cascade="all, delete-orphan"
     )
 
 

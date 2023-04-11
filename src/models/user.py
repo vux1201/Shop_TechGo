@@ -22,4 +22,6 @@ class User(Base):
     is_staff: Mapped[bool] = mapped_column(default=False)
 
     shopping_session: Mapped["ShoppingSession"] = relationship(back_populates="user")
-    orders: Mapped[list["Order"]] = relationship(back_populates="user")
+    orders: Mapped[list["Order"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
