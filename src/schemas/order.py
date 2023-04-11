@@ -43,6 +43,7 @@ class OrderUpdate(BaseModel):
 
 
 class Order(OrderBase):
+    id: int
     order_items: list["OrderItem"]
 
     class Config:
