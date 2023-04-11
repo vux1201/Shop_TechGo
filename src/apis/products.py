@@ -62,6 +62,10 @@ async def create_product(
 )
 async def read_product(*, db: Session = Depends(get_db), id: int):
     product = crud.product.get(db=db, id=id)
+    if not product:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Khong ton tai san pham nay"
+        )
     return product
 
 

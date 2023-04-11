@@ -1,13 +1,14 @@
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
 import crud
 import schemas
-from apis.deps import get_current_user, get_db
+from apis.deps import get_current_user, get_db, get_current_admin
 from models.user import User
 from utils.constants import GENDER_CHOICES
 from utils.validate import password_strong
+from core.pagination import PagedResponseSchema, PageParams, paginate
 
 router = APIRouter(
     prefix="/users",
@@ -61,4 +62,37 @@ async def update_user_me(
         password=password,
     )
     user = crud.user.update(db=db, db_obj=current_user, obj_in=user_in)
+    return user
+
+
+@router.get(
+    "/",
+    tags=["users"],
+    response_model=PagedResponseSchema[schemas.User],
+    dependencies=[Depends(get_current_admin)],
+    summary="Lấy danh sách user (admin)",
+)
+async def read_users(
+    *,
+    db: Session = Depends(get_db),
+    keyword: str | None = None,
+    page_params: PageParams = Depends(),
+):
+    query = crud.user.get_multi_filter(keyword=keyword)
+    return paginate(db, query, page_params, schemas.User)
+
+
+@router.get(
+    "/{user_id}",
+    tags=["users"],
+    response_model=schemas.User,
+    dependencies=[Depends(get_current_admin)],
+    summary="Xem chi tiết user (admin)",
+)
+async def read_user(*, db: Session = Depends(get_db), user_id: int):
+    user = crud.user.get(db=db, id=user_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Khong ton tai user nay"
+        )
     return user
