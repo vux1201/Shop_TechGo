@@ -20,6 +20,8 @@ async def read_products(
     category_id: list[int] | None = Query(default=None),
     brand_id: list[int] | None = Query(default=None),
     keyword: str | None = None,
+    min_price: int | None = None,
+    max_price: int | None = None,
     page_params: PageParams = Depends(),
 ):
     """
@@ -36,6 +38,8 @@ async def read_products(
         category_id=category_id,
         brand_id=brand_id,
         keyword=keyword,
+        min_price=min_price,
+        max_price=max_price,
     )
     return paginate(db, query, page_params, schemas.Product)
 

@@ -29,9 +29,15 @@ def paginate(
 ) -> PagedResponseSchema[T]:
     """Paginate the query."""
 
-    paginated_query = db.scalars(
-        query.offset((page_params.page - 1) * page_params.size).limit(page_params.size)
-    ).all()
+    paginated_query = (
+        db.scalars(
+            query.offset((page_params.page - 1) * page_params.size).limit(
+                page_params.size
+            )
+        )
+        .unique()
+        .all()
+    )
 
     return PagedResponseSchema(
         total=db.scalar(select(func.count()).select_from(query)),
