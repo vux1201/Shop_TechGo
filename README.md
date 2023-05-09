@@ -1,6 +1,6 @@
 ## Demo
 
-https://vux1201.github.io/Shop_TechGo/
+https://techgo-store.netlify.app/
 
 # techgo-vue
 
