@@ -7,8 +7,8 @@ from apis import api_router
 app = FastAPI(
     title="API Techgo",
     contact={
-        "name": "Huong Pham",
-        "github": "https://github.com/huongpx",
+        "name": "Nguyen Cong Vu",
+        "github": "https://github.com/",
     },
 )
 
