@@ -1,6 +1,6 @@
 ## Demo
 
-https://techgo-store.netlify.app/
+<!-- https://techgo-store.netlify.app/ -->
 
 # techgo-vue
 
