@@ -18,7 +18,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     ) -> Select[tuple[User]]:
         stmt = select(User)
         if keyword:
-            stmt = stmt.where(User.name.icontains(keyword))
+            stmt = stmt.where(User.email.icontains(keyword))
         return stmt
 
     def get_by_email(self, db: Session, email: str) -> User | None:

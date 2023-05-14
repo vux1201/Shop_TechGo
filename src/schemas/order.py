@@ -50,5 +50,5 @@ class Order(OrderBase):
         orm_mode = True
 
 
-class OrderAdmin(OrderBase):
+class OrderAdmin(Order):
     user: User
